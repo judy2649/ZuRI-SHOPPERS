@@ -1,0 +1,6 @@
+{
+  "name": "Zuri Shoppers",
+  "description": "An elegant online e-commerce platform for Kenya and Uganda styled like Jumia, featuring rich product categories, multi-currency support, cart management, and seamless order placement.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
