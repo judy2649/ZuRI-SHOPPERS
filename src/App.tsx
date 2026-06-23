@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { 
   Smartphone, Tv, Shirt, Sparkles, Home, ShoppingBag, 
   HelpCircle, ChevronRight, Search, ShoppingCart, User, 
-  MapPin, Clock, ArrowRight, Star, AlertCircle, RefreshCw
+  MapPin, Clock, ArrowRight, Star, AlertCircle, RefreshCw,
+  MessageCircle, Phone, Mail
 } from 'lucide-react';
 import { Country, Product, CartItem, Order } from './types';
 import { products as allProducts, categories, regionsData } from './data';
@@ -253,9 +254,20 @@ export default function App() {
             Admin Panel 🛠️
           </button>
           <span className="text-slate-650">|</span>
-          <span className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1">
-            Support: {country === 'Kenya' ? '+254 700 123456' : '+256 700 654321'}
-          </span>
+          <div className="flex items-center gap-3">
+            <a href="https://wa.me/256755220220" target="_blank" rel="noopener noreferrer" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-2">
+              <MessageCircle size={14} className="text-green-500" />
+              <span className="hidden md:inline">+256 755 220220</span>
+            </a>
+            <a href="tel:+256755220220" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-2">
+              <Phone size={14} className="text-blue-400" />
+              <span className="hidden md:inline">Call Us</span>
+            </a>
+            <a href="mailto:zurishoppersug@gmail.com" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-2">
+              <Mail size={14} className="text-orange-400" />
+              <span className="hidden md:inline">Email Support</span>
+            </a>
+          </div>
           <span className="text-slate-650">|</span>
           <button 
             onClick={() => { setActiveTab('orders'); setSelectedCategory(null); }}
@@ -789,10 +801,23 @@ export default function App() {
           <div>
             <h4 className="text-white text-xs font-bold uppercase tracking-wider mb-3">Country Help Center</h4>
             <ul className="space-y-2 text-[11px]">
-              <li><button onClick={() => alert('Support line open KES 7AM to 9PM!')} className="hover:text-white transition-colors cursor-pointer text-left">Contact Kenya Customer Support</button></li>
-              <li><button onClick={() => alert('Support line open UGX 7AM to 9PM!')} className="hover:text-white transition-colors cursor-pointer text-left">Contact Uganda Customer Support</button></li>
-              <li><button onClick={() => alert('Simulated refund policies logged!')} className="hover:text-white transition-colors cursor-pointer text-left">How to return an item</button></li>
-              <li><button onClick={() => alert('Deliveries managed via dispatch hubs.')} className="hover:text-white transition-colors cursor-pointer text-left">Delivery timelines & fees</button></li>
+              <li>
+                <a href="https://wa.me/256755220220" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-2">
+                  <MessageCircle size={12} className="text-green-500" /> Watsapp +256755220220
+                </a>
+              </li>
+              <li>
+                <a href="tel:+256755220220" className="hover:text-white transition-colors flex items-center gap-2">
+                  <Phone size={12} className="text-blue-400" /> Calls +256755220220
+                </a>
+              </li>
+              <li>
+                <a href="mailto:zurishoppersug@gmail.com" className="hover:text-white transition-colors flex items-center gap-2">
+                  <Mail size={12} className="text-orange-400" /> zurishoppersug@gmail.com
+                </a>
+              </li>
+              <li><button onClick={() => alert('Simulated refund policies logged!')} className="hover:text-white transition-colors cursor-pointer flex items-center gap-2 text-left">How to return an item</button></li>
+              <li><button onClick={() => alert('Deliveries managed via dispatch hubs.')} className="hover:text-white transition-colors cursor-pointer flex items-center gap-2 text-left">Delivery timelines & fees</button></li>
             </ul>
           </div>
 
@@ -829,6 +854,31 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Floating Contact Buttons */}
+      <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-4">
+        <button 
+          onClick={() => { try { window.open('https://wa.me/256755220220', '_blank'); } catch(e) { console.error('Failed to open link'); } }}
+          className="bg-green-500 hover:bg-green-600 text-white p-3.5 rounded-full shadow-2xl transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
+          title="WhatsApp Support"
+        >
+          <MessageCircle size={24} />
+        </button>
+        <button 
+          onClick={() => { try { window.open('tel:+256755220220'); } catch(e) { console.error('Failed to open link'); } }}
+          className="bg-blue-500 hover:bg-blue-600 text-white p-3.5 rounded-full shadow-2xl transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
+          title="Call Us"
+        >
+          <Phone size={24} />
+        </button>
+        <button 
+          onClick={() => { try { window.open('mailto:zurishoppersug@gmail.com'); } catch(e) { console.error('Failed to open link'); } }}
+          className="bg-orange-500 hover:bg-orange-600 text-white p-3.5 rounded-full shadow-2xl transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
+          title="Email Us"
+        >
+          <Mail size={24} />
+        </button>
+      </div>
 
       {/* Floating Interactive AIAssistant */}
       <AIAssistant 
