@@ -128,7 +128,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2">
-            <ShoppingBag size={18} className="text-orange-500" />
+            <ShoppingBag size={18} className="text-gold" />
             <span className="font-bold text-slate-800 text-sm uppercase tracking-wide">
               Secure Checkout • Steps {step} of 3
             </span>
@@ -162,7 +162,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Judith Oyoo"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-orange-500 outline-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-gold outline-none"
                   />
                 </div>
 
@@ -176,7 +176,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="e.g. +254 712 345678"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-orange-500 outline-none font-mono"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-gold outline-none font-mono"
                   />
                 </div>
               </div>
@@ -190,7 +190,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="e.g. shopper@gmail.com"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-orange-500 outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-gold outline-none"
                 />
               </div>
 
@@ -204,7 +204,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       required
                       value={town}
                       onChange={(e) => setTown(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 cursor-pointer appearance-none outline-none focus:border-orange-500"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 cursor-pointer appearance-none outline-none focus:border-gold"
                     >
                       <option value="">-- Choose Town --</option>
                       {regionInfo.towns.map((t) => (
@@ -225,7 +225,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     value={addressDetails}
                     onChange={(e) => setAddressDetails(e.target.value)}
                     placeholder="Apt, Plot number, Gate Color, Street name"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-orange-500 outline-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 focus:border-gold outline-none"
                   />
                 </div>
               </div>
@@ -253,7 +253,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <hr className="border-slate-200 my-1.5" />
                   <div className="flex justify-between text-sm font-extrabold text-slate-950">
                     <span>Grand Total:</span>
-                    <span className="font-mono text-orange-500">{currencySymbol} {totalAmount.toLocaleString()}</span>
+                    <span className="font-mono text-gold">{currencySymbol} {totalAmount.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -281,7 +281,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     onClick={() => setPaymentMethod(pm)}
                     className={`flex items-center gap-3 p-3.5 rounded-xl border text-xs cursor-pointer transition-all ${
                       paymentMethod === pm 
-                        ? 'bg-orange-500/10 border-orange-500' 
+                        ? 'bg-gold/10 border-gold' 
                         : 'bg-white border-slate-150 hover:bg-slate-50'
                     }`}
                   >
@@ -290,13 +290,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       name="payment-method-radio"
                       checked={paymentMethod === pm}
                       onChange={() => {}} // Controlled by label click
-                      className="text-orange-500 focus:ring-orange-500"
+                      className="text-gold focus:ring-gold"
                     />
                     <div className="flex items-center gap-2">
                       {pm.includes('Money') || pm.includes('M-Pesa') ? (
-                        <Smartphone size={16} className="text-orange-500" />
+                        <Smartphone size={16} className="text-gold" />
                       ) : pm.includes('Card') ? (
-                        <CreditCard size={16} className="text-orange-500" />
+                        <CreditCard size={16} className="text-gold" />
                       ) : (
                         <ShoppingBag size={16} className="text-slate-500" />
                       )}
@@ -315,8 +315,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
               {/* Interactive MoMo push notification prompt container */}
               {(paymentMethod.includes('Money') || paymentMethod.includes('M-Pesa')) && (
-                <div className="bg-slate-900 text-slate-100 p-4 rounded-xl border border-orange-500/30 space-y-3 animate-in slide-in-from-top-4 duration-200">
-                  <div className="flex items-center justify-between text-xs border-b border-slate-800 pb-2 text-orange-300 font-bold uppercase tracking-wider">
+                <div className="bg-slate-900 text-slate-100 p-4 rounded-xl border border-gold/30 space-y-3 animate-in slide-in-from-top-4 duration-200">
+                  <div className="flex items-center justify-between text-xs border-b border-slate-800 pb-2 text-gold-light font-bold uppercase tracking-wider">
                     <span className="flex items-center gap-1.5">
                       <Smartphone className="animate-bounce" size={14} />
                       Simulated MoMo Gateway
@@ -325,7 +325,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
 
                   <p className="text-[11px] text-slate-300 leading-normal">
-                    We will send an interactive mobile money push of <strong className="text-orange-300 font-semibold">{currencySymbol} {totalAmount.toLocaleString()}</strong> to <strong className="text-orange-300">{phone}</strong>. Please type your 4-digit simulated payment PIN inside the mobile keypad below:
+                    We will send an interactive mobile money push of <strong className="text-gold-light font-semibold">{currencySymbol} {totalAmount.toLocaleString()}</strong> to <strong className="text-gold-light">{phone}</strong>. Please type your 4-digit simulated payment PIN inside the mobile keypad below:
                   </p>
 
                   <div className="flex flex-col items-center bg-slate-950 p-4 border border-slate-800 rounded-xl max-w-xs mx-auto space-y-3">
@@ -339,7 +339,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                         placeholder="••••"
                         value={momoPin}
                         onChange={(e) => setMomoPin(e.target.value.replace(/\D/g, ''))}
-                        className="w-full text-center tracking-widest font-mono text-lg py-1.5 bg-slate-900 border border-slate-800 text-white outline-none rounded-lg focus:border-orange-500"
+                        className="w-full text-center tracking-widest font-mono text-lg py-1.5 bg-slate-900 border border-slate-800 text-white outline-none rounded-lg focus:border-gold"
                       />
                     </div>
 
@@ -348,11 +348,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     {isVerifyingPin ? (
                        <div className="space-y-1.5 text-center">
                         <span className="flex gap-1 justify-center">
-                          <span className="h-1.5 w-1.5 bg-orange-500 rounded-full animate-bounce"></span>
-                          <span className="h-1.5 w-1.5 bg-orange-500 rounded-full animate-bounce delay-100"></span>
-                          <span className="h-1.5 w-1.5 bg-orange-500 rounded-full animate-bounce delay-200"></span>
+                          <span className="h-1.5 w-1.5 bg-gold rounded-full animate-bounce"></span>
+                          <span className="h-1.5 w-1.5 bg-gold rounded-full animate-bounce delay-100"></span>
+                          <span className="h-1.5 w-1.5 bg-gold rounded-full animate-bounce delay-200"></span>
                         </span>
-                        <p className="text-[9px] text-orange-300 animate-pulse">Contacting Safaricom/MTN APIs...</p>
+                        <p className="text-[9px] text-gold-light animate-pulse">Contacting Safaricom/MTN APIs...</p>
                       </div>
                     ) : (
                       <div className="flex gap-1.5">
@@ -381,8 +381,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   type="button"
                   onClick={handleSimulatePayment}
                   disabled={isVerifyingPin}
-                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-xs uppercase shadow-lg transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
-                  style={{ boxShadow: '0 4px 14px rgba(249, 115, 22, 0.4)' }}
+                  className="flex-1 bg-gold hover:bg-gold-hover text-slate-950 font-extrabold py-3 rounded-xl text-xs uppercase shadow-lg transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
+                  style={{ 
+                    boxShadow: '0 4px 14px rgba(197, 160, 89, 0.4), 0 0 20px rgba(30, 58, 138, 0.2)' 
+                  }}
                 >
                   Pay & Complete Order ({currencySymbol} {totalAmount.toLocaleString()})
                 </button>
@@ -423,7 +425,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
                 <div className="flex justify-between text-xs text-slate-600">
                   <span>Paid via:</span>
-                  <span className="font-semibold text-orange-500">{createdOrder.paymentMethod}</span>
+                  <span className="font-semibold text-gold">{createdOrder.paymentMethod}</span>
                 </div>
                 <div className="flex justify-between text-sm text-slate-900 font-extrabold border-t border-slate-200 pt-2 mt-2">
                   <span>Total Settled:</span>
@@ -431,7 +433,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
               </div>
 
-              <p className="text-[11px] text-orange-500 font-bold uppercase tracking-widest bg-orange-500/10 py-1.5 px-3 rounded-lg max-w-xs mx-auto animate-pulse">
+              <p className="text-[11px] text-gold font-bold uppercase tracking-widest bg-gold/10 py-1.5 px-3 rounded-lg max-w-xs mx-auto animate-pulse">
                 🚀 Shipped via Zuri Express
               </p>
 

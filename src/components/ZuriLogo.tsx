@@ -7,116 +7,115 @@ interface ZuriLogoProps {
 
 export const ZuriLogo: React.FC<ZuriLogoProps> = ({ className = '', size = 'md' }) => {
   const dimensions = {
-    sm: { width: 45, height: 36, fontSize: 'text-sm' },
-    md: { width: 150, height: 120, fontSize: 'text-xl' },
-    lg: { width: 300, height: 240, fontSize: 'text-3xl' }
+    sm: { width: 40, height: 32 },
+    md: { width: 140, height: 112 },
+    lg: { width: 340, height: 272 }
   };
 
   const current = dimensions[size];
 
-  if (size === 'sm') {
-    // Mini version for narrow headers
-    return (
-      <div className={`flex items-center gap-2 ${className}`}>
-        <svg viewBox="0 0 100 100" className="w-8 h-8 drop-shadow">
-          <polygon points="50,5 95,50 50,95 5,50" fill="none" stroke="#f97316" strokeWidth="6" />
-          <polygon points="50,20 75,50 50,80 25,50" fill="none" stroke="#f97316" strokeWidth="3" />
-          <line x1="25" y1="50" x2="75" y2="50" stroke="#f97316" strokeWidth="3" />
-          <line x1="50" y1="20" x2="50" y2="80" stroke="#f97316" strokeWidth="3" />
-        </svg>
-        <span className="font-sans font-black tracking-tighter text-orange-500 uppercase text-xl leading-none">
-          ZURI
-        </span>
-      </div>
-    );
-  }
-
+  // A unified SVG vector representing the exact provided Zuri Shoppers Logo
+  // It features:
+  // - Gold hex code: #C5A059
+  // - Premium gold/white geometric shapes over a transparent or dark container
   return (
-    <div className={`flex flex-col items-center justify-center text-center ${className}`}>
-      <svg 
-        viewBox="0 0 400 320" 
-        style={{ width: current.width, height: current.height }}
-        className="drop-shadow-lg"
+    <div className={`flex items-center justify-center ${className}`} id={`zuri-logo-${size}`}>
+      <svg
+        viewBox="0 0 500 400"
+        style={{ width: size === 'sm' ? undefined : current.width, height: size === 'sm' ? undefined : current.height }}
+        className={`${size === 'sm' ? 'w-10 h-8' : ''} drop-shadow-md`}
       >
-        {/* Background Space */}
-        <rect width="400" height="320" fill="transparent" />
-
-        {/* Outer Orange Diamond */}
+        {/* Upper Chevron in Gold (#C5A059) */}
         <polygon 
-          points="200,10 390,160 200,310 10,160" 
-          fill="#081621" 
-          stroke="#f97316" 
-          strokeWidth="10" 
-          strokeLinejoin="round"
+          points="250,40 425,155 385,155 250,60 115,155 75,155" 
+          fill="#C5A059" 
         />
 
-        {/* Inner Gem Lattice */}
-        <g id="gem-lattice">
-          {/* Main diamond outline */}
+        {/* Lower Chevron in Gold (#C5A059) */}
+        <polygon 
+          points="250,360 425,245 385,245 250,340 115,245 75,245" 
+          fill="#C5A059" 
+        />
+
+        {/* Geometric Diamond Prism (3D Gem) */}
+        <g id="gem-lattice-crystal">
+          {/* Outer Gem Frame */}
           <polygon 
-            points="200,40 250,75 200,110 150,75" 
+            points="250,85 285,115 250,145 215,115" 
             fill="none" 
-            stroke="#f97316" 
-            strokeWidth="3.5" 
+            stroke="#C5A059" 
+            strokeWidth="2.5" 
           />
-          {/* Inner crystal lines */}
-          <line x1="200" y1="40" x2="200" y2="110" stroke="#f97316" strokeWidth="2.5" />
-          <line x1="150" y1="75" x2="250" y2="75" stroke="#f97316" strokeWidth="2.5" />
-          <line x1="200" y1="40" x2="175" y2="75" stroke="#f97316" strokeWidth="2" />
-          <line x1="200" y1="40" x2="225" y2="75" stroke="#f97316" strokeWidth="2" />
-          <line x1="200" y1="110" x2="175" y2="75" stroke="#f97316" strokeWidth="2" />
-          <line x1="200" y1="110" x2="225" y2="75" stroke="#f97316" strokeWidth="2" />
-        </g>
-
-        {/* Dark Banner with orange borders */}
-        <g id="banner">
-          <rect x="35" y="132" width="330" height="56" fill="#0c2334" />
-          <line x1="25" y1="132" x2="375" y2="132" stroke="#f97316" strokeWidth="3" />
-          <line x1="25" y1="188" x2="375" y2="188" stroke="#f97316" strokeWidth="3" />
+          {/* Gem Facets inside */}
+          <line x1="215" y1="115" x2="285" y2="115" stroke="#C5A059" strokeWidth="2" />
+          <line x1="250" y1="85" x2="250" y2="145" stroke="#C5A059" strokeWidth="2" />
           
-          {/* Flaired background accent lines */}
-          <line x1="10" y1="132" x2="25" y2="132" stroke="#f97316" strokeWidth="1" strokeDasharray="5,2" />
-          <line x1="10" y1="188" x2="25" y2="188" stroke="#f97316" strokeWidth="1" strokeDasharray="5,2" />
-          <line x1="375" y1="132" x2="390" y2="132" stroke="#f97316" strokeWidth="1" strokeDasharray="5,2" />
-          <line x1="375" y1="188" x2="390" y2="188" stroke="#f97316" strokeWidth="1" strokeDasharray="5,2" />
+          {/* Upper facet triangles */}
+          <polygon points="250,85 232,115 250,115" fill="none" stroke="#C5A059" strokeWidth="1.5" />
+          <polygon points="250,85 268,115 250,115" fill="none" stroke="#C5A059" strokeWidth="1.5" />
+          
+          {/* Lower facet triangles */}
+          <polygon points="250,145 232,115 250,115" fill="none" stroke="#C5A059" strokeWidth="1.5" />
+          <polygon points="250,145 268,115 250,115" fill="none" stroke="#C5A059" strokeWidth="1.5" />
         </g>
 
-        {/* Text Area */}
+        {/* Double flanking borders around ZURI SHOPPERS */}
+        {/* Upper bordering line with split center peak */}
+        <path 
+          d="M 60,172 L 235,172 L 245,169 L 255,169 L 265,172 L 440,172" 
+          stroke="#C5A059" 
+          strokeWidth="2" 
+          fill="none" 
+        />
+        {/* Lower bordering line with split center inverse peak */}
+        <path 
+          d="M 60,228 L 235,228 L 245,231 L 255,231 L 265,228 L 440,228" 
+          stroke="#C5A059" 
+          strokeWidth="2" 
+          fill="none" 
+        />
+
+        {/* Text Area: ZURI SHOPPERS */}
         <text 
-          x="200" 
-          y="170" 
-          fontFamily="system-ui, -apple-system, sans-serif" 
-          fontSize="30" 
+          x="250" 
+          y="211" 
+          fontFamily="Georgia, Cambria, 'Times New Roman', Times, serif" 
+          fontSize="40" 
           fontWeight="900" 
-          fill="#f97316" 
+          fill="#FFFFFF" 
           textAnchor="middle" 
-          letterSpacing="2.5"
+          letterSpacing="1"
         >
           ZURI SHOPPERS
         </text>
 
-        {/* Est 2024 sub banner */}
+        {/* EST. 2024 Sub-text */}
         <text 
-          x="200" 
-          y="222" 
-          fontFamily="system-ui, -apple-system, sans-serif" 
-          fontSize="15" 
-          fontWeight="bold" 
-          fill="#F5F5F5" 
+          x="250" 
+          y="266" 
+          fontFamily="'Courier New', Courier, monospace" 
+          fontSize="17" 
+          fontWeight="900" 
+          fill="#FFFFFF" 
           textAnchor="middle" 
-          letterSpacing="4"
+          letterSpacing="7"
         >
           EST. 2024
         </text>
 
-        {/* Small downward accent arrow at the bottom */}
+        {/* Inverted solid White Triangle component */}
         <polygon 
-          points="180,245 220,245 200,268" 
+          points="215,285 285,285 250,308" 
           fill="#FFFFFF" 
-          stroke="#f97316" 
-          strokeWidth="1.5" 
         />
       </svg>
+      
+      {/* If size is sm, we append text right after it for high readability */}
+      {size === 'sm' && (
+        <span className="font-sans font-black tracking-normal text-white uppercase text-xs ml-2">
+          Zuri <span className="text-[#C5A059]">Shoppers</span>
+        </span>
+      )}
     </div>
   );
 };

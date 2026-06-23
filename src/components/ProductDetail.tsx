@@ -71,7 +71,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <div className="w-full md:w-1/2 bg-slate-50 p-6 flex flex-col justify-center relative border-b md:border-b-0 md:border-r border-slate-100">
             <div className="absolute top-4 left-4 flex flex-col gap-2">
               {product.isExpress && (
-                <span className="bg-orange-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
+                <span className="bg-gold text-slate-950 text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-md shadow-sm">
                   Zuri Express
                 </span>
               )}
@@ -99,7 +99,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           <div className="w-full md:w-1/2 p-6 flex flex-col justify-between">
             <div>
               {/* Brand and category */}
-              <div className="flex items-center justify-between text-xs text-orange-500 font-bold tracking-widest uppercase mb-1">
+              <div className="flex items-center justify-between text-xs text-gold font-bold tracking-widest uppercase mb-1">
                 <span>Brand: {product.brand}</span>
                 <span className="text-slate-400 font-normal">| {product.category.replace('-', ' ')}</span>
               </div>
@@ -153,7 +153,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               {/* Delivery Estimator / Selector on City */}
               <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-5">
                 <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                  <Truck size={14} className="text-orange-500" />
+                  <Truck size={14} className="text-gold" />
                   Delivery & Shipping Fee Estimator
                 </h4>
                 <div className="space-y-3">
@@ -165,7 +165,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                       <select
                         value={selectedTown}
                         onChange={(e) => setSelectedTown(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-lg text-xs px-3 py-2 text-slate-800 cursor-pointer appearance-none outline-none focus:border-orange-500"
+                        className="w-full bg-white border border-slate-200 rounded-lg text-xs px-3 py-2 text-slate-800 cursor-pointer appearance-none outline-none focus:border-gold"
                       >
                         <option value="">-- Select Town/Zone --</option>
                         {regionInfo.towns.map((town) => (
@@ -217,12 +217,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 <button
                   onClick={handleAddToCart}
                   disabled={product.stock <= 0}
-                  className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 px-6 rounded-xl shadow-lg transition-transform active:scale-95 text-sm cursor-pointer ${
+                  className={`flex-1 flex items-center justify-center gap-2 font-extrabold py-3 px-6 rounded-xl shadow-lg transition-transform active:scale-95 text-sm cursor-pointer ${
                     isAdded 
                       ? 'bg-green-600 text-white hover:bg-green-700' 
-                      : 'bg-orange-500 text-white hover:bg-orange-600'
+                      : 'bg-gold text-slate-950 hover:bg-gold-hover'
                   }`}
-                  style={{ boxShadow: isAdded ? 'none' : '0 4px 14px rgba(249, 115, 22, 0.4)' }}
+                  style={{ boxShadow: isAdded ? 'none' : '0 4px 14px rgba(197, 160, 89, 0.4)' }}
                   id={`add-to-cart-btn-${product.id}`}
                 >
                   {isAdded ? (
@@ -242,17 +242,17 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               {/* Utility Assure badges */}
               <div className="grid grid-cols-3 gap-2 mt-4 text-center">
                 <div className="flex flex-col items-center p-2 bg-slate-50 rounded-lg border border-slate-100">
-                  <Calendar size={14} className="text-orange-500 mb-1" />
+                  <Calendar size={14} className="text-gold mb-1" />
                   <span className="text-[10px] text-slate-600 font-bold block">Easy Returns</span>
                   <span className="text-[9px] text-slate-400 block">7 days return policy</span>
                 </div>
                 <div className="flex flex-col items-center p-2 bg-slate-50 rounded-lg border border-slate-100">
-                  <ShieldCheck size={14} className="text-orange-500 mb-1" />
+                  <ShieldCheck size={14} className="text-gold mb-1" />
                   <span className="text-[10px] text-slate-600 font-bold block">100% Secure</span>
                   <span className="text-[9px] text-slate-400 block">Encrypted local pay</span>
                 </div>
                 <div className="flex flex-col items-center p-2 bg-slate-50 rounded-lg border border-slate-100">
-                  <Truck size={14} className="text-orange-500 mb-1" />
+                  <Truck size={14} className="text-gold mb-1" />
                   <span className="text-[10px] text-slate-600 font-bold block">Zuri Protect</span>
                   <span className="text-[9px] text-slate-400 block">Local warranty card</span>
                 </div>

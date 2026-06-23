@@ -73,9 +73,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
         {/* Header */}
         <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2 text-slate-800">
-            <ShoppingCart size={20} className="text-orange-500" />
+            <ShoppingCart size={20} className="text-gold" />
             <h3 className="font-bold text-lg font-sans">Your Shopping Cart</h3>
-            <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+            <span className="bg-gold text-slate-950 text-xs px-2 py-0.5 rounded-full font-bold">
               {cart.reduce((sum, i) => sum + i.quantity, 0)}
             </span>
           </div>
@@ -96,7 +96,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <p className="text-xs max-w-xs mt-1">Start browsing our premium products in Kenya and Uganda and add items to your cart!</p>
               <button 
                 onClick={onClose}
-                className="mt-4 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2 rounded-lg"
+                className="mt-4 bg-gold hover:bg-gold-hover text-slate-950 text-xs font-black px-4 py-2 rounded-lg"
               >
                 Go Shopping
               </button>
@@ -120,7 +120,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <h4 className="text-xs font-bold text-slate-900 line-clamp-2 leading-tight">
                       {item.product.title}
                     </h4>
-                    <p className="text-[10px] text-orange-500 font-semibold mt-0.5 uppercase">
+                    <p className="text-[10px] text-gold font-semibold mt-0.5 uppercase">
                       Brand: {item.product.brand}
                     </p>
                     
@@ -176,7 +176,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                   placeholder="e.g. ZURI10 or WELCOME25"
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs uppercase focus:border-orange-500 outline-none"
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1 text-xs uppercase focus:border-gold outline-none"
                 />
                 <button 
                   onClick={handleApplyCoupon}
@@ -205,15 +205,17 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <hr className="border-slate-200 my-1" />
               <div className="flex justify-between text-sm font-extrabold text-slate-950">
                 <span>Total Amount:</span>
-                <span className="font-mono text-orange-500">{currencySymbol} {finalTotal.toLocaleString()}</span>
+                <span className="font-mono text-gold">{currencySymbol} {finalTotal.toLocaleString()}</span>
               </div>
             </div>
 
             {/* Action Checkout button */}
             <button
               onClick={handleCheckOut}
-              className="w-full flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl text-xs uppercase shadow-md transition-all active:scale-95 cursor-pointer"
-              style={{ boxShadow: '0 4px 14px rgba(249, 115, 22, 0.4)' }}
+              className="w-full flex items-center justify-center gap-2 bg-gold hover:bg-gold-hover text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase shadow-md transition-all active:scale-95 cursor-pointer animate-pulse hover:animate-none"
+              style={{ 
+                boxShadow: '0 4px 14px rgba(197, 160, 89, 0.4), 0 0 20px rgba(30, 58, 138, 0.2)' 
+              }}
               id="cart-drawer-checkout-btn"
             >
               <span>Proceed to Checkout</span>

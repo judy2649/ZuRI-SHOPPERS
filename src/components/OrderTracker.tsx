@@ -54,13 +54,13 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
         <button
           onClick={selectedOrder ? () => setSelectedOrder(null) : onBack}
-          className="flex items-center gap-1.5 text-xs font-bold text-orange-500 hover:text-orange-600 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-xs font-bold text-gold hover:text-gold-hover transition-colors cursor-pointer"
         >
           <ArrowLeft size={16} />
           <span>{selectedOrder ? 'Back to Order History' : 'Back to Store'}</span>
         </button>
         <h2 className="font-extrabold font-sans text-slate-900 border-none p-0 flex items-center gap-2 text-sm sm:text-base">
-          <Package className="text-orange-500" size={20} />
+          <Package className="text-gold" size={20} />
           <span>{selectedOrder ? `Tracking Order ${selectedOrder.id}` : 'Your Zuri Order History'}</span>
         </h2>
       </div>
@@ -79,7 +79,7 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({
               </div>
               <button
                 onClick={onBack}
-                className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-md transition-all active:scale-95"
+                className="bg-gold hover:bg-gold-hover text-slate-950 text-xs font-black px-4 py-2.5 rounded-xl shadow-md transition-all active:scale-95"
               >
                 Go Shopping Now
               </button>
@@ -95,7 +95,7 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({
                   key={order.id}
                   onClick={() => handleSelectOrder(order)}
                   className="bg-slate-50 hover:bg-slate-100/70 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:scale-[1.01] cursor-pointer"
-                  style={{ borderLeft: '4px solid #f97316' }}
+                  style={{ borderLeft: '4px solid #C5A059' }}
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -115,12 +115,12 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({
                   <div className="flex items-center justify-between sm:justify-end gap-4 border-t sm:border-t-0 border-slate-200/50 pt-2.5 sm:pt-0">
                     <div className="text-left sm:text-right">
                       <span className="text-[10px] text-slate-400 font-bold block uppercase leading-none">Total settled</span>
-                      <span className="text-sm font-black text-orange-500 font-mono leading-none mt-1 inline-block">
+                      <span className="text-sm font-black text-gold font-mono leading-none mt-1 inline-block">
                         {currencySymbol} {order.total.toLocaleString()}
                       </span>
                     </div>
-                    <ChevronRight size={18} className="text-orange-500 hidden sm:block" />
-                    <span className="text-xs text-orange-500 font-bold sm:hidden flex items-center gap-1.5">
+                    <ChevronRight size={18} className="text-gold hidden sm:block" />
+                    <span className="text-xs text-gold font-bold sm:hidden flex items-center gap-1.5 font-mono">
                       <span>View details</span>
                       <ChevronRight size={14} />
                     </span>
@@ -163,7 +163,7 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({
                   {/* Circle Flag anchor */}
                   <div className={`absolute -left-8 rounded-full h-8 w-8 flex items-center justify-center border-2 transition-all ${
                     isCompleted 
-                      ? 'bg-orange-500 border-orange-500 text-white' 
+                      ? 'bg-gold border-gold text-slate-950 font-black' 
                       : 'bg-white border-slate-350 text-slate-500'
                   }`}>
                     {idx === 0 ? <CheckCircle2 size={14} /> : idx === 1 ? <Clock size={14} /> : idx === 2 ? <Truck size={14} /> : <Package size={14} />}
@@ -189,7 +189,7 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({
           {/* Parcel Item list within active tracking details */}
           <div>
             <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-3.5 flex items-center gap-1.5">
-              <ShoppingBag size={14} className="text-orange-500" />
+              <ShoppingBag size={14} className="text-gold" />
               Items in this shipment Parcel
             </h4>
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 divide-y divide-slate-150 space-y-3.5">
@@ -233,7 +233,7 @@ export const OrderTracker: React.FC<OrderTrackerProps> = ({
                 </div>
                 <div className="flex justify-between w-40 text-sm font-extrabold text-slate-950 border-t border-slate-350 pt-1 mt-1">
                   <span>Settled:</span>
-                  <span className="font-mono text-orange-500">{currencySymbol} {selectedOrder.total.toLocaleString()}</span>
+                  <span className="font-mono text-gold">{currencySymbol} {selectedOrder.total.toLocaleString()}</span>
                 </div>
               </div>
             </div>

@@ -191,7 +191,7 @@ export const products: Product[] = [
     image: 'https://images.unsplash.com/photo-1571175482183-c240f1226502?w=500&auto=format&fit=crop&q=80',
     category: 'appliances',
     brand: 'Ramtons',
-    stock: 5,
+    stock: 0,
     isExpress: false,
     isBestSeller: false
   },

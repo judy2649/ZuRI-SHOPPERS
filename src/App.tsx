@@ -12,6 +12,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderTracker } from './components/OrderTracker';
 import { AIAssistant } from './components/AIAssistant';
+import { AdminPanel } from './components/AdminPanel';
 
 // Helper for Category Icons
 const CategoryIcon = ({ iconName, className = "h-5 w-5" }: { iconName: string, className?: string }) => {
@@ -34,8 +35,54 @@ export default function App() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'catalog' | 'orders'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'orders' | 'admin'>('catalog');
   const [pastOrders, setPastOrders] = useState<Order[]>([]);
+
+  // Products state for Catalog persistence and additions/updates
+  const [products, setProducts] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem('zuri_products');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.error("Error reading initial products from storage:", e);
+    }
+    return allProducts;
+  });
+
+  const saveProductsToStorage = (updatedProducts: Product[]) => {
+    setProducts(updatedProducts);
+    localStorage.setItem('zuri_products', JSON.stringify(updatedProducts));
+  };
+
+  const handleAddProduct = (newProd: Product) => {
+    const updated = [newProd, ...products];
+    saveProductsToStorage(updated);
+  };
+
+  const handleUpdateProduct = (updatedProd: Product) => {
+    const updated = products.map((p) => p.id === updatedProd.id ? updatedProd : p);
+    saveProductsToStorage(updated);
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    const updated = products.filter((p) => p.id !== id);
+    saveProductsToStorage(updated);
+  };
+
+  // Sync currently viewed product if it is updated inside products state
+  useEffect(() => {
+    if (selectedProduct) {
+      const match = products.find(p => p.id === selectedProduct.id);
+      if (match) {
+        setSelectedProduct(match);
+      }
+    }
+  }, [products]);
 
   // Checkout Coupon Codes
   const [checkoutCouponCode, setCheckoutCouponCode] = useState('');
@@ -52,14 +99,22 @@ export default function App() {
 
   // Load orders from storage on load
   useEffect(() => {
-    const saved = localStorage.getItem('zuri_orders');
-    if (saved) {
-      setPastOrders(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem('zuri_orders');
+      if (saved) {
+        setPastOrders(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error("Error reading past orders from storage:", e);
     }
 
-    const savedCart = localStorage.getItem('zuri_cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
+    try {
+      const savedCart = localStorage.getItem('zuri_cart');
+      if (savedCart) {
+        setCart(JSON.parse(savedCart));
+      }
+    } catch (e) {
+      console.error("Error reading cart from storage:", e);
     }
   }, []);
 
@@ -140,7 +195,7 @@ export default function App() {
   };
 
   const handleAddProductById = (id: string) => {
-    const targetProduct = allProducts.find(p => p.id === id);
+    const targetProduct = products.find(p => p.id === id);
     if (targetProduct) {
       handleAddToCart(targetProduct, 1);
       alert(`Zuri: Added ${targetProduct.brand} Smartphone to your cart! 🛍️`);
@@ -152,7 +207,7 @@ export default function App() {
     {
       title: "EXCLUSIVE MEGA FLASH DEALS",
       sub: country === 'Kenya' ? "Up to 30% Off Infinix, Tecno & custom Smart TVs!" : "Up to 30% Off Phones & UG Street Rolex Kit specials!",
-      color: "bg-slate-950 border border-orange-500/40",
+      color: "bg-slate-950 border border-gold/40",
       image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80"
     },
     {
@@ -170,7 +225,7 @@ export default function App() {
   ];
 
   // Filter Catalog Products
-  const filteredProducts = allProducts.filter((p) => {
+  const filteredProducts = products.filter((p) => {
     const matchesCategory = selectedCategory ? p.category === selectedCategory : true;
     const matchesSearch = searchQuery
       ? p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -184,19 +239,27 @@ export default function App() {
     <div className="bg-[#F1F1F2] min-h-screen font-sans flex flex-col text-slate-800">
       
       {/* 1. TOP UTILITY STRIP */}
-      <div className="bg-slate-950 text-white py-1.5 px-4 text-xs font-semibold flex flex-col sm:flex-row items-center justify-between border-b border-orange-500/20 gap-1 select-none">
-        <span className="flex items-center gap-1.5 text-slate-300">
-          <span className="inline-block h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span>
+      <div className="bg-slate-950 text-white py-1.5 px-4 text-xs font-semibold flex flex-col sm:flex-row items-center justify-between border-b border-gold/20 gap-1 select-none">
+        <span className="flex items-center gap-1.5 text-slate-300 font-medium">
+          <span className="inline-block h-2 w-2 rounded-full bg-gold animate-pulse shadow-[0_0_8px_#C5A059]"></span>
           <span>East African Commerce Hub: Kenya 🇰🇪 & Uganda 🇺🇬 • Style like Jumia</span>
         </span>
         <div className="flex items-center gap-4 text-slate-300">
-          <span className="hover:text-orange-300 transition-colors cursor-pointer flex items-center gap-1">
+          <button 
+            onClick={() => { setActiveTab('admin'); setSelectedCategory(null); setSelectedProduct(null); }}
+            className={`hover:text-gold-light transition-colors uppercase tracking-wider text-[10px] font-black cursor-pointer ${activeTab === 'admin' ? 'text-gold-light border-b border-gold' : ''}`}
+            id="top-admin-portal-link"
+          >
+            Admin Panel 🛠️
+          </button>
+          <span className="text-slate-650">|</span>
+          <span className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1">
             Support: {country === 'Kenya' ? '+254 700 123456' : '+256 700 654321'}
           </span>
           <span className="text-slate-650">|</span>
           <button 
             onClick={() => { setActiveTab('orders'); setSelectedCategory(null); }}
-            className={`hover:text-orange-300 transition-colors uppercase tracking-wider text-[10px] font-black ${activeTab === 'orders' ? 'text-orange-300 border-b border-orange-500' : ''}`}
+            className={`hover:text-gold-light transition-colors uppercase tracking-wider text-[10px] font-black cursor-pointer ${activeTab === 'orders' ? 'text-gold-light border-b border-gold' : ''}`}
           >
             Track My Package 📦
           </button>
@@ -214,7 +277,7 @@ export default function App() {
           >
             <ZuriLogo size="sm" />
             <div className="hidden sm:block">
-              <span className="text-xs font-mono tracking-widest text-orange-500 uppercase block leading-none">Shoppers</span>
+              <span className="text-xs font-mono tracking-widest text-gold uppercase block leading-none font-bold">Shoppers</span>
               <span className="text-[10px] text-slate-400 block mt-0.5 font-bold leading-none">Kenya & Uganda</span>
             </div>
           </div>
@@ -227,7 +290,7 @@ export default function App() {
                 placeholder="Search products, brands, groceries..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 text-slate-100 placeholder:text-slate-500 rounded-xl pl-10 pr-24 py-2.5 text-xs outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/40"
+                className="w-full bg-slate-950 border border-slate-800 text-slate-100 placeholder:text-slate-500 rounded-xl pl-10 pr-24 py-2.5 text-xs outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
               />
               <Search className="absolute left-3.5 text-slate-400 h-4.5 w-4.5" />
               {searchQuery && (
@@ -238,7 +301,7 @@ export default function App() {
                   Clear
                 </button>
               )}
-              <span className="absolute right-2.5 bg-orange-500 text-white text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg">
+              <span className="absolute right-2.5 bg-gold text-slate-950 text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg">
                 Search
               </span>
             </div>
@@ -257,13 +320,13 @@ export default function App() {
                   <option value="Kenya" className="bg-slate-950 text-white">🇰🇪 Kenya (KES)</option>
                   <option value="Uganda" className="bg-slate-950 text-white">🇺🇬 Uganda (UGX)</option>
                 </select>
-                <ChevronRight size={14} className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 text-orange-500 pointer-events-none" />
+                <ChevronRight size={14} className="absolute right-2 top-1/2 -translate-y-1/2 rotate-90 text-gold pointer-events-none" />
               </div>
             </div>
 
             {/* Profile Dropdown Simulation */}
             <div className="relative group cursor-pointer hidden sm:flex items-center gap-1 bg-slate-950 border border-slate-800 px-3 py-1.5 rounded-xl hover:border-slate-700">
-              <User size={16} className="text-orange-500" />
+              <User size={16} className="text-gold" />
               <div className="text-left select-none">
                 <span className="text-[10px] text-slate-400 block leading-none">Jambo,</span>
                 <span className="text-[11px] font-black text-slate-100 block mt-0.5 leading-none">Judith Oyoo</span>
@@ -273,11 +336,11 @@ export default function App() {
             {/* Shopping Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-black px-4 py-2 rounded-xl flex items-center gap-2 transition-all active:scale-95 text-xs shadow-md cursor-pointer"
-              style={{ boxShadow: '0 4px 10px rgba(249, 115, 22, 0.3)' }}
+              className="bg-gold hover:bg-gold-hover text-slate-950 font-black px-4 py-2 rounded-xl flex items-center gap-2 transition-all active:scale-95 text-xs shadow-md cursor-pointer"
+              style={{ boxShadow: '0 4px 10px rgba(197, 160, 89, 0.4)' }}
               id="header-shopping-cart-toggle"
             >
-              <ShoppingCart size={16} className="text-slate-950" />
+              <ShoppingCart size={16} className="text-slate-950 font-bold" />
               <span className="hidden sm:inline text-slate-950">Cart</span>
               <span className="bg-slate-950 text-white text-[10px] font-bold h-5 w-5 rounded-full flex items-center justify-center">
                 {cart.reduce((count, item) => count + item.quantity, 0)}
@@ -290,8 +353,17 @@ export default function App() {
       {/* 3. MAIN APP LAYOUT WINDOW */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
         
-        {/* VIEW: ORDER HISTORIC TRACKER */}
-        {activeTab === 'orders' ? (
+        {/* VIEW: ADMIN PANEL */}
+        {activeTab === 'admin' ? (
+          <AdminPanel 
+            products={products}
+            onAddProduct={handleAddProduct}
+            onUpdateProduct={handleUpdateProduct}
+            onDeleteProduct={handleDeleteProduct}
+            onBack={() => setActiveTab('catalog')}
+            categories={categories}
+          />
+        ) : activeTab === 'orders' ? (
           <OrderTracker 
             country={country}
             currencySymbol={currencySymbol}
@@ -314,7 +386,7 @@ export default function App() {
                     onClick={() => setSelectedCategory(null)}
                     className={`w-full text-left font-bold text-xs px-3 py-2.5 rounded-xl transition-colors flex items-center justify-between cursor-pointer ${
                       selectedCategory === null 
-                        ? 'bg-slate-900 text-orange-300' 
+                        ? 'bg-slate-900 text-gold' 
                         : 'text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -322,7 +394,7 @@ export default function App() {
                       <ShoppingBag className="h-4.5 w-4.5" />
                       <span>All Products Catalog</span>
                     </div>
-                    <ChevronRight size={14} className={selectedCategory === null ? 'text-orange-300' : 'text-slate-400'} />
+                    <ChevronRight size={14} className={selectedCategory === null ? 'text-gold' : 'text-slate-400'} />
                   </button>
 
                   {categories.map((cat) => (
@@ -331,15 +403,15 @@ export default function App() {
                       onClick={() => setSelectedCategory(cat.id)}
                       className={`w-full text-left font-semibold text-xs px-3 py-2.5 rounded-xl transition-colors flex items-center justify-between cursor-pointer ${
                         selectedCategory === cat.id 
-                          ? 'bg-slate-900 text-orange-300' 
+                          ? 'bg-slate-900 text-gold' 
                           : 'text-slate-600 hover:bg-slate-50'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <CategoryIcon iconName={cat.iconName} className="h-4.5 w-4.5 text-orange-500" />
+                        <CategoryIcon iconName={cat.iconName} className="h-4.5 w-4.5 text-gold" />
                         <span>{cat.name}</span>
                       </div>
-                      <ChevronRight size={14} className={selectedCategory === cat.id ? 'text-orange-300' : 'text-slate-400'} />
+                      <ChevronRight size={14} className={selectedCategory === cat.id ? 'text-gold' : 'text-slate-400'} />
                     </button>
                   ))}
                 </nav>
@@ -360,7 +432,7 @@ export default function App() {
                 {/* Left floating promo summary info text */}
                 <div className="relative z-10 p-6 sm:p-10 flex flex-col justify-between max-w-lg text-white">
                   <div>
-                    <span className="bg-orange-500 text-white text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full inline-block mb-3.5">
+                    <span className="bg-gold text-slate-950 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full inline-block mb-3.5">
                       Zuri Anniversary Specials
                     </span>
                     <h2 className="text-xl sm:text-3xl font-black font-sans leading-tight text-white mb-2 tracking-tight">
@@ -374,12 +446,12 @@ export default function App() {
                   {/* Coupon codes trigger tag */}
                   <div className="mt-4 sm:mt-0 flex flex-wrap items-center gap-3">
                     <span className="text-[11px] text-slate-400">Coupon Code:</span>
-                    <strong className="bg-white/10 text-orange-300 border border-orange-500/40 rounded-xl px-3 py-1 font-mono text-xs font-bold leading-normal">
+                    <strong className="bg-white/10 text-gold-light border border-gold/40 rounded-xl px-3 py-1 font-mono text-xs font-bold leading-normal">
                       WELCOME25
                     </strong>
                     <button 
                       onClick={() => {
-                        const supermarketProduct = allProducts.find(p => p.category === 'supermarket');
+                        const supermarketProduct = products.find(p => p.category === 'supermarket');
                         if (supermarketProduct) setSelectedProduct(supermarketProduct);
                       }}
                       className="bg-white hover:bg-slate-100 text-slate-950 font-black px-4 py-2 text-xs rounded-xl flex items-center gap-1 shadow cursor-pointer ml-auto"
@@ -396,7 +468,7 @@ export default function App() {
                     <button
                       key={idx}
                       onClick={() => setCarouselIndex(idx)}
-                      className={`h-2 rounded-full cursor-pointer transition-all ${carouselIndex === idx ? 'w-6 bg-orange-500' : 'w-2 bg-white/40'}`}
+                      className={`h-2 rounded-full cursor-pointer transition-all ${carouselIndex === idx ? 'w-6 bg-gold' : 'w-2 bg-white/40'}`}
                     />
                   ))}
                 </div>
@@ -404,8 +476,8 @@ export default function App() {
 
               {/* Right Column: Jumia-style quick utility ads */}
               <div className="w-full lg:w-1/4 flex flex-col justify-between gap-4">
-                <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-105 flex items-center gap-3">
-                  <div className="bg-orange-500/10 text-orange-500 p-3 rounded-xl">
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-3">
+                  <div className="bg-gold/10 text-gold p-3 rounded-xl">
                     <RefreshCw className="animate-spin h-5 w-5" style={{ animationDuration: '6s' }} />
                   </div>
                   <div>
@@ -414,7 +486,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-105 flex items-center gap-3">
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-3">
                   <div className="bg-green-500/10 text-green-600 p-3 rounded-xl">
                     <MapPin className="h-5 w-5" />
                   </div>
@@ -425,11 +497,11 @@ export default function App() {
                 </div>
 
                 {/* Custom Promo mini-card */}
-                <div className="bg-slate-900 text-white rounded-2xl p-4 border border-orange-500/30 relative overflow-hidden flex-1 min-h-[90px] flex flex-col justify-center">
-                  <div className="absolute top-0 right-0 h-24 w-24 bg-orange-500/10 rounded-full blur-xl border border-none"></div>
-                  <span className="text-orange-300 text-[9px] font-black tracking-widest uppercase">Promo Coupon</span>
+                <div className="bg-slate-900 text-white rounded-2xl p-4 border border-gold/30 relative overflow-hidden flex-1 min-h-[90px] flex flex-col justify-center">
+                  <div className="absolute top-0 right-0 h-24 w-24 bg-gold/10 rounded-full blur-xl border border-none"></div>
+                  <span className="text-gold-light text-[9px] font-black tracking-widest uppercase">Promo Coupon</span>
                   <p className="text-xs font-bold mt-1 leading-tight text-white">Save 10% on your entire basket today!</p>
-                  <p className="font-mono text-xs font-black text-orange-500 mt-1.5">CODE: ZURI10</p>
+                  <p className="font-mono text-xs font-black text-gold mt-1.5">CODE: ZURI10</p>
                 </div>
               </div>
             </section>
@@ -443,7 +515,7 @@ export default function App() {
                 <button
                   onClick={() => setSelectedCategory(null)}
                   className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-xs font-bold cursor-pointer transition-colors ${
-                    selectedCategory === null ? 'bg-slate-900 text-orange-300' : 'bg-white text-slate-600 border border-slate-150'
+                    selectedCategory === null ? 'bg-slate-900 text-gold' : 'bg-white text-slate-600 border border-slate-150'
                   }`}
                 >
                   <span>All Catalog</span>
@@ -453,10 +525,10 @@ export default function App() {
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-xs font-semibold cursor-pointer transition-colors ${
-                      selectedCategory === cat.id ? 'bg-slate-900 text-orange-300 font-bold' : 'bg-white text-slate-600 border border-slate-150'
+                      selectedCategory === cat.id ? 'bg-slate-900 text-gold font-bold' : 'bg-white text-slate-600 border border-slate-150'
                     }`}
                   >
-                    <CategoryIcon iconName={cat.iconName} className="h-4 w-4 text-orange-500" />
+                    <CategoryIcon iconName={cat.iconName} className="h-4 w-4 text-gold" />
                     <span>{cat.name}</span>
                   </button>
                 ))}
@@ -466,19 +538,19 @@ export default function App() {
             {/* Circular fast deals indicators bar */}
             <section className="grid grid-cols-4 md:grid-cols-8 gap-3 text-center">
               {[
-                { label: "Flash Sales", style: "bg-orange-50 text-orange-500", linkId: "phone-infinix-hot-40i" },
+                { label: "Flash Sales", style: "bg-gold/10 text-gold", linkId: "phone-infinix-hot-40i" },
                 { label: "Phone Deals", style: "bg-blue-50 text-blue-600", linkId: "phone-tecno-spark-20" },
                 { label: "Free Delivery", style: "bg-green-50 text-green-600", linkId: "groceries-maize-pembe" },
                 { label: "Supermarket", style: "bg-red-50 text-red-600", linkId: "groceries-ug-rolex-kit" },
                 { label: "Suede Boots", style: "bg-purple-50 text-purple-600", linkId: "fashion-safari-boots" },
                 { label: "Shea Butter", style: "bg-pink-50 text-pink-600", linkId: "beauty-shea-butter" },
-                { label: "Air Fryers", style: "bg-orange-50 text-orange-600", linkId: "appliance-zuri-airfryer" },
+                { label: "Air Fryers", style: "bg-gold/15 text-gold-light", linkId: "appliance-zuri-airfryer" },
                 { label: "TV Specials", style: "bg-teal-50 text-teal-600", linkId: "tv-zuri-43-smart" }
               ].map((link, idx) => (
                 <button
                   key={idx}
                   onClick={() => {
-                    const targetProduct = allProducts.find(p => p.id === link.linkId);
+                    const targetProduct = products.find(p => p.id === link.linkId);
                     if (targetProduct) setSelectedProduct(targetProduct);
                   }}
                   className="flex flex-col items-center gap-1 bg-white hover:bg-slate-50 border border-slate-150 rounded-2xl p-3 transition-transform hover:-translate-y-1 cursor-pointer shadow-xs"
@@ -494,12 +566,12 @@ export default function App() {
             </section>
 
             {/* GOLDEN FLASH SALES EVENT ROW */}
-            <section className="bg-slate-900 border border-orange-500/40 text-white rounded-2xl overflow-hidden shadow-md">
+            <section className="bg-slate-900 border border-gold/40 text-white rounded-2xl overflow-hidden shadow-md">
               {/* Event Header bar */}
-              <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 px-5 py-3.5 flex flex-col sm:flex-row items-center justify-between border-b border-orange-500/10 gap-3">
+              <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 px-5 py-3.5 flex flex-col sm:flex-row items-center justify-between border-b border-gold/10 gap-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-orange-500 font-extrabold animate-pulse">⚡</span>
-                  <h3 className="font-black text-sm uppercase tracking-widest text-orange-300 p-0 border-none m-0">Zuri Golden Flash Sales</h3>
+                  <span className="text-gold font-extrabold animate-pulse">⚡</span>
+                  <h3 className="font-black text-sm uppercase tracking-widest text-gold-light p-0 border-none m-0">Zuri Golden Flash Sales</h3>
                   <div className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm font-mono">
                     <Clock size={11} />
                     <span>Time Left: {formatTimer(timerSeconds)}</span>
@@ -510,7 +582,7 @@ export default function App() {
 
               {/* Grid of featured discounted products */}
               <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-[#111827]/70">
-                {allProducts.slice(0, 4).map((product, idx) => {
+                {products.slice(0, 4).map((product, idx) => {
                   const currentPrice = country === 'Kenya' ? product.priceKES : product.priceUGX;
                   const originalPrice = Math.round(currentPrice / (1 - product.discount / 100));
 
@@ -518,7 +590,7 @@ export default function App() {
                     <div 
                       key={product.id}
                       onClick={() => setSelectedProduct(product)}
-                      className="bg-[#181f2b] border border-slate-800 rounded-xl p-3 flex flex-col justify-between hover:border-orange-500/30 transition-all cursor-pointer group relative"
+                      className="bg-[#181f2b] border border-slate-800 rounded-xl p-3 flex flex-col justify-between hover:border-gold/40 hover:shadow-[0_12px_24px_rgba(197,160,89,0.15)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 ease-out cursor-pointer group relative"
                     >
                       {/* Percent off badge */}
                       <span className="absolute top-2.5 left-2.5 bg-red-600 text-white text-[10px] font-black tracking-wide px-1.5 py-0.5 rounded-md z-1">
@@ -527,19 +599,26 @@ export default function App() {
 
                       <div>
                         {/* Image area */}
-                        <div className="bg-white/5 rounded-lg p-2.5 mb-3 flex items-center justify-center sm:h-36 overflow-hidden">
+                        <div className="bg-white/5 rounded-lg p-2.5 mb-3 flex items-center justify-center sm:h-36 overflow-hidden relative">
                           <img 
                             src={product.image} 
                             alt={product.title} 
                             referrerPolicy="no-referrer"
-                            className="h-28 object-cover rounded group-hover:scale-105 duration-200" 
+                            className={`h-28 object-cover rounded group-hover:scale-105 duration-200 transition-all ${product.stock === 0 ? 'grayscale opacity-40' : ''}`} 
                           />
+                          {product.stock === 0 && (
+                            <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[1px] flex items-center justify-center rounded-lg">
+                              <span className="bg-red-600 text-white text-[9px] font-black tracking-widest uppercase px-2.5 py-1 rounded shadow-md">
+                                Sold Out
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         {/* Text */}
-                        <h4 className="text-xs font-bold line-clamp-1 group-hover:text-orange-300 leading-normal text-slate-100">{product.title}</h4>
+                        <h4 className="text-xs font-bold line-clamp-1 group-hover:text-gold-light leading-normal text-slate-100">{product.title}</h4>
                         <div className="flex items-baseline gap-2 mt-1.5">
-                          <span className="text-sm font-black font-mono text-orange-500">
+                          <span className="text-sm font-black font-mono text-gold">
                             {currencySymbol} {currentPrice.toLocaleString()}
                           </span>
                           <span className="text-[10px] line-through text-slate-500 font-mono">
@@ -552,11 +631,11 @@ export default function App() {
                       <div className="mt-3.5 space-y-1">
                         <div className="flex justify-between text-[9px] text-slate-400 font-bold">
                           <span>{product.stock} items left</span>
-                          <span className="text-amber-500">{(idx + 7) * 10}% Claimed</span>
+                          <span className="text-gold">{(idx + 7) * 10}% Claimed</span>
                         </div>
                         <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
                           <div 
-                            className="bg-gradient-to-r from-orange-500 to-orange-400 h-full rounded-full"
+                            className="bg-gradient-to-r from-gold to-gold-light h-full rounded-full"
                             style={{ width: `${(idx + 7) * 10}%` }}
                           />
                         </div>
@@ -592,7 +671,7 @@ export default function App() {
               {filteredProducts.length === 0 ? (
                 /* No Results found panel */
                 <div className="bg-white rounded-2xl p-12 text-center border border-slate-150 space-y-3 max-w-md mx-auto">
-                  <AlertCircle size={40} className="text-orange-500 mx-auto" />
+                  <AlertCircle size={40} className="text-gold mx-auto" />
                   <h4 className="font-bold text-slate-800 text-sm">No exact matches in stock</h4>
                   <p className="text-xs text-slate-500">
                     We could not find items matching your filters or country inventory. You can trigger search clear, or consult our AI Shopper Zuri in the bottom right corner!
@@ -615,7 +694,7 @@ export default function App() {
                       <div
                         key={product.id}
                         onClick={() => setSelectedProduct(product)}
-                        className="bg-white hover:shadow-lg rounded-2xl overflow-hidden border border-slate-200 flex flex-col justify-between p-3.5 transition-all duration-200 cursor-pointer group hover:-translate-y-1"
+                        className="bg-white hover:shadow-[0_15px_30px_rgba(197,160,89,0.12),0_4px_15px_rgba(0,0,0,0.05)] hover:border-gold/30 rounded-2xl overflow-hidden border border-slate-200 flex flex-col justify-between p-3.5 transition-all duration-300 cursor-pointer group hover:-translate-y-1.5 hover:scale-[1.015] active:scale-[0.985] ease-out relative"
                         id={`product-card-${product.id}`}
                       >
                         {/* Upper image content */}
@@ -625,13 +704,20 @@ export default function App() {
                               -{product.discount}%
                             </span>
                           )}
-                          <div className="bg-slate-50 rounded-xl overflow-hidden mb-3.5 aspect-square flex items-center justify-center p-2">
+                          <div className="bg-slate-50 rounded-xl overflow-hidden mb-3.5 aspect-square flex items-center justify-center p-2 relative">
                             <img 
                               src={product.image} 
                               alt={product.title} 
                               referrerPolicy="no-referrer"
-                              className="h-32 object-cover rounded group-hover:scale-105 duration-300" 
+                              className={`h-32 object-cover rounded group-hover:scale-105 duration-300 transition-all ${product.stock === 0 ? 'grayscale opacity-40' : ''}`} 
                             />
+                            {product.stock === 0 && (
+                              <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[1.5px] flex items-center justify-center rounded-xl">
+                                <span className="bg-red-600 text-white text-[10px] font-black tracking-widest uppercase px-3 py-1.5 rounded-lg shadow-md">
+                                  Out of Stock
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
 
@@ -639,7 +725,7 @@ export default function App() {
                         <div className="space-y-1.5 flex-1 flex flex-col justify-between">
                           <div>
                             <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-extrabold">Brand: {product.brand}</span>
-                            <h4 className="text-xs font-semibold text-slate-800 line-clamp-2 leading-tight group-hover:text-orange-500 transition-colors">
+                            <h4 className="text-xs font-semibold text-slate-800 line-clamp-2 leading-tight group-hover:text-gold transition-colors">
                               {product.title}
                             </h4>
                           </div>
@@ -665,7 +751,7 @@ export default function App() {
                             </div>
 
                             {product.isExpress && (
-                              <span className="inline-block bg-orange-500/15 text-orange-500 text-[9px] font-black px-1.5 py-0.5 rounded uppercase mt-2.5">
+                              <span className="inline-block bg-gold/15 text-gold text-[9px] font-black px-1.5 py-0.5 rounded uppercase mt-2.5">
                                 ZURI EXPRESS
                               </span>
                             )}
@@ -690,14 +776,14 @@ export default function App() {
             <div className="flex items-center gap-2">
               <ZuriLogo size="sm" />
               <div>
-                <span className="text-xs font-mono tracking-widest text-orange-500 uppercase block leading-none">Shoppers</span>
+                <span className="text-xs font-mono tracking-widest text-gold uppercase block leading-none font-bold">Shoppers</span>
                 <span className="text-[10px] text-white block mt-0.5 leading-none">Kenya & Uganda</span>
               </div>
             </div>
             <p className="text-[11px] leading-relaxed text-slate-400">
               Styled like Jumia but personalized for Zuri Shoppers brand themes. Secure Mobile Money and direct card fulfillment across Nairobi, Thika, Eldoret, Kampala, Jinja, and Entebbe.
             </p>
-            <p className="text-[10px] text-orange-500 font-mono leading-none">EST. 2024</p>
+            <p className="text-[10px] text-gold font-mono leading-none">EST. 2024</p>
           </div>
 
           <div>
@@ -725,8 +811,8 @@ export default function App() {
             </p>
             {/* SVG custom simple logo stripe */}
             <div className="flex gap-2.5 flex-wrap">
-              <span className="bg-slate-950 border border-slate-800 text-[9px] text-orange-500 font-black px-2 py-1 rounded">M-PESA / MOMO</span>
-              <span className="bg-slate-950 border border-slate-800 text-[9px] text-orange-300 font-black px-2 py-1 rounded">AIRTEL MONEY</span>
+              <span className="bg-slate-950 border border-slate-800 text-[9px] text-gold font-black px-2 py-1 rounded">M-PESA / MOMO</span>
+              <span className="bg-slate-950 border border-slate-800 text-[9px] text-gold-light font-black px-2 py-1 rounded">AIRTEL MONEY</span>
               <span className="bg-slate-950 border border-slate-805 text-[9px] text-white font-mono px-2 py-1 rounded">VISA CARD</span>
             </div>
           </div>

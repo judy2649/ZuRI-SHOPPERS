@@ -153,8 +153,10 @@ What are you shopping for in **${country}** today? 🌟`,
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-40 bg-orange-500 hover:bg-orange-600 text-white p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center animate-bounce hover:animate-none"
-        style={{ boxShadow: '0 0 15px rgba(249, 115, 22, 0.4)' }}
+        className="fixed bottom-6 right-6 z-40 bg-gold hover:bg-gold-hover text-white p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:scale-110 flex items-center justify-center animate-bounce hover:animate-none"
+        style={{ 
+          boxShadow: '0 0 15px rgba(197, 160, 89, 0.6), 0 0 30px rgba(30, 58, 138, 0.3)' 
+        }}
         id="zuri-ai-toggle"
       >
         {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
@@ -169,19 +171,23 @@ What are you shopping for in **${country}** today? 🌟`,
       {/* Chat Window */}
       {isOpen && (
         <div 
-          className="fixed bottom-24 right-6 z-40 w-[360px] sm:w-[400px] h-[550px] bg-slate-900 text-white rounded-2xl shadow-2xl border border-orange-500/30 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-200"
+          className="fixed bottom-24 right-6 z-40 w-[360px] sm:w-[400px] h-[550px] bg-[#090e16] text-white rounded-2xl shadow-2xl border border-gold/30 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-10 duration-200"
           id="zuri-ai-chat"
         >
+          {/* Ambient blurred glowing blue-sphere backdrop behind the dark container */}
+          <div className="absolute top-1/4 left-1/4 w-40 h-40 bg-blue-600/10 rounded-full blur-[60px] pointer-events-none"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-32 h-32 bg-blue-500/10 rounded-full blur-[50px] pointer-events-none"></div>
+
           {/* Header */}
-          <div className="bg-gradient-to-r from-slate-950 to-slate-900 border-b border-orange-500/20 p-4 flex items-center justify-between">
+          <div className="relative z-10 bg-gradient-to-r from-slate-950 to-[#0e1625] border-b border-gold/20 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-orange-500 to-amber-400 p-1.5 rounded-xl">
+              <div className="bg-gradient-to-br from-gold to-gold-light p-1.5 rounded-xl">
                 <Bot size={20} className="text-slate-950" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h4 className="font-bold text-sm tracking-wide">ZURI</h4>
-                  <span className="bg-orange-500/20 text-[#fed7aa] text-[10px] px-1.5 py-0.5 rounded font-mono">
+                  <span className="bg-gold/20 text-gold-light text-[10px] px-1.5 py-0.5 rounded font-mono">
                     AI Assistant
                   </span>
                 </div>
@@ -190,7 +196,7 @@ What are you shopping for in **${country}** today? 🌟`,
             </div>
             <button 
               onClick={() => setIsOpen(false)}
-              className="text-slate-300 hover:text-orange-500 p-1 rounded-full transition-colors"
+              className="text-slate-300 hover:text-gold p-1 rounded-full transition-colors"
             >
               <X size={18} />
             </button>
@@ -198,14 +204,14 @@ What are you shopping for in **${country}** today? 🌟`,
 
           {/* Warning Banner block if no keys are bound */}
           {errorStatus && (
-            <div className="bg-amber-500/10 border-b border-amber-500/20 text-xs px-3 py-1.5 text-amber-300 flex items-center gap-1.5">
+            <div className="relative z-10 bg-amber-500/10 border-b border-amber-500/20 text-xs px-3 py-1.5 text-amber-300 flex items-center gap-1.5">
               <AlertCircle size={12} />
               <span>{errorStatus}</span>
             </div>
           )}
 
           {/* Messages Body */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-800">
+          <div className="relative z-10 flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-800">
             {messages.map((msg) => (
               <div 
                 key={msg.id}
@@ -215,7 +221,7 @@ What are you shopping for in **${country}** today? 🌟`,
               >
                 {/* Avatar */}
                 <div className={`p-1.5 rounded-full flex-shrink-0 h-8 w-8 flex items-center justify-center ${
-                  msg.role === 'user' ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-300'
+                  msg.role === 'user' ? 'bg-gold text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'
                 }`}>
                   {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
                 </div>
@@ -237,7 +243,7 @@ What are you shopping for in **${country}** today? 🌟`,
                           const parts = content.split('**');
                           return (
                             <p key={idx} className="my-0.5">
-                              {parts.map((p, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-[#fed7aa] font-semibold">{p}</strong> : p)}
+                              {parts.map((p, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-gold-light font-semibold">{p}</strong> : p)}
                             </p>
                           );
                         }
@@ -250,7 +256,7 @@ What are you shopping for in **${country}** today? 🌟`,
                             const subparts = listText.split('**');
                             return (
                               <li key={idx} className="ml-4 list-disc text-slate-300 py-0.5">
-                                {subparts.map((p, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-[#fed7aa] font-semibold">{p}</strong> : p)}
+                                {subparts.map((p, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-gold-light font-semibold">{p}</strong> : p)}
                               </li>
                             );
                           }
@@ -276,9 +282,9 @@ What are you shopping for in **${country}** today? 🌟`,
                 </div>
                 <div className="bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none p-3 text-slate-400 text-xs flex items-center gap-1.5">
                   <span className="flex gap-1 animate-pulse">
-                    <span className="h-1.5 w-1.5 bg-orange-500 rounded-full animate-bounce"></span>
-                    <span className="h-1.5 w-1.5 bg-orange-500 rounded-full animate-bounce delay-100"></span>
-                    <span className="h-1.5 w-1.5 bg-orange-500 rounded-full animate-bounce delay-200"></span>
+                    <span className="h-1.5 w-1.5 bg-gold rounded-full animate-bounce"></span>
+                    <span className="h-1.5 w-1.5 bg-gold rounded-full animate-bounce delay-100"></span>
+                    <span className="h-1.5 w-1.5 bg-gold rounded-full animate-bounce delay-200"></span>
                   </span>
                   <span>Zuri is checking inventory...</span>
                 </div>
@@ -288,12 +294,12 @@ What are you shopping for in **${country}** today? 🌟`,
           </div>
 
           {/* Quick Suggestions list */}
-          <div className="px-4 py-2 border-t border-slate-800 bg-slate-950/70 overflow-x-auto whitespace-nowrap flex gap-2 scrollbar-none">
+          <div className="relative z-10 px-4 py-2 border-t border-slate-800 bg-slate-950/75 overflow-x-auto whitespace-nowrap flex gap-2 scrollbar-none">
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
                 onClick={() => handleQuickQuestion(suggestion)}
-                className="inline-flex items-center gap-1 bg-slate-800 hover:bg-slate-700 hover:border-orange-500/40 border border-slate-700 text-[11px] text-[#fed7aa] px-2.5 py-1.5 rounded-full transition-all duration-150 cursor-pointer text-ellipsis overflow-hidden"
+                className="inline-flex items-center gap-1 bg-slate-800 hover:bg-slate-700 hover:border-gold/40 border border-slate-700 text-[11px] text-gold-light px-2.5 py-1.5 rounded-full transition-all duration-150 cursor-pointer text-ellipsis overflow-hidden"
               >
                 <Sparkles size={10} />
                 <span>{suggestion}</span>
@@ -302,7 +308,7 @@ What are you shopping for in **${country}** today? 🌟`,
           </div>
 
           {/* Action Input Bar */}
-          <div className="p-3 border-t border-slate-800 bg-slate-950 flex items-center gap-2">
+          <div className="relative z-10 p-3 border-t border-slate-800 bg-slate-950 flex items-center gap-2">
             <input
               type="text"
               value={inputValue}
@@ -310,15 +316,15 @@ What are you shopping for in **${country}** today? 🌟`,
               onKeyDown={handleKeyPress}
               placeholder="Ask anything about stores, deals..."
               disabled={isLoading}
-              className="flex-1 bg-slate-900 border border-slate-800 focus:border-orange-500 outline-none rounded-xl text-xs px-3.5 py-2.5 text-slate-200 placeholder:text-slate-500 disabled:opacity-55"
+              className="flex-1 bg-slate-900 border border-slate-800 focus:border-gold outline-none rounded-xl text-xs px-3.5 py-2.5 text-slate-200 placeholder:text-slate-500 disabled:opacity-55"
               id="zuri-ai-input"
             />
             <button
               onClick={() => sendMessage(inputValue)}
               disabled={isLoading || !inputValue.trim()}
-              className="bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white p-2.5 rounded-xl transition-all flex items-center justify-center cursor-pointer"
+              className="bg-gold hover:bg-gold-hover disabled:opacity-50 text-slate-950 p-2.5 rounded-xl transition-all flex items-center justify-center cursor-pointer"
             >
-              <Send size={14} className="text-white" />
+              <Send size={14} className="text-slate-950 font-bold" />
             </button>
           </div>
         </div>

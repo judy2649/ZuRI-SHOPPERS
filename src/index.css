@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@theme {
+  /* Premium designer colors matching Gold, Black, White and Blue/Glow effects */
+  --color-gold: #C5A059;
+  --color-gold-hover: #b08b47;
+  --color-gold-light: #ebd39d;
+  --color-gold-dark: #8c6c32;
+  --color-luxury-black: #05070a;
+  --color-luxury-gray: #111622;
+  --color-luxury-blue: #1e3a8a;
+  --color-dark-blue: #0b1528;
+}
