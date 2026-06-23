@@ -324,18 +324,36 @@ export function AdminPanel({
 
             {/* Image URL with preset picker */}
             <div>
-              <label className="text-[10px] text-slate-400 font-black uppercase block mb-1">Cover Image URL</label>
+              <label className="text-[10px] text-slate-400 font-black uppercase block mb-1">Cover Image</label>
               <div className="flex gap-2">
                 <input 
                   type="text"
-                  placeholder="https://..."
+                  placeholder="https://... or upload local image"
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
                   className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:border-gold outline-none"
                 />
-                <div className="bg-slate-905 border border-slate-800 text-slate-400 p-2 rounded-xl flex items-center justify-center">
-                  <ImageIcon size={14} />
-                </div>
+                <label className="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-xl flex items-center justify-center cursor-pointer transition-colors border border-slate-700">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          if (typeof reader.result === 'string') {
+                            setImage(reader.result);
+                          }
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }} 
+                  />
+                  <ImageIcon size={14} className="mr-1.5" />
+                  <span className="text-[10px] font-bold">Upload</span>
+                </label>
               </div>
               
               {/* Quick Preset Selector */}

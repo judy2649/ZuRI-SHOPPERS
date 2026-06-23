@@ -222,7 +222,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <ArrowRight size={14} />
             </button>
             <p className="text-[10px] text-center text-slate-400">
-              🌟 Complete checkout to simulate live Mobile Money confirmations!
+              🌟 Complete checkout to place your order with payment on delivery!
             </p>
           </div>
         )}

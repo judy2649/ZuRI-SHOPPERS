@@ -425,7 +425,7 @@ export const regionsData = {
       'Eldoret (Zone C)': 380,
       'Nyeri (Zone C)': 350,
     } as Record<string, number>,
-    paymentMethods: ['M-Pesa (Mobile Money)', 'Credit/Debit Card', 'Cash on Delivery']
+    paymentMethods: ['Payment on Delivery'   ]
   },
   Uganda: {
     currency: 'UGX',
@@ -440,6 +440,6 @@ export const regionsData = {
       'Gulu (Northern Zone)': 14000,
       'Masaka (Southern Zone)': 11500,
     } as Record<string, number>,
-    paymentMethods: ['MTN Mobile Money', 'Airtel Money', 'Credit/Debit Card', 'Cash on Delivery']
+    paymentMethods: ['Payment on Delivery' ]
   }
 };

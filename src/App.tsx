@@ -85,6 +85,11 @@ export default function App() {
     }
   }, [products]);
 
+  // Admin Auth State
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
+  const [adminLoginEmail, setAdminLoginEmail] = useState('');
+  const [adminLoginError, setAdminLoginError] = useState('');
+
   // Checkout Coupon Codes
   const [checkoutCouponCode, setCheckoutCouponCode] = useState('');
   const [checkoutDiscountPercent, setCheckoutDiscountPercent] = useState(0);
@@ -203,27 +208,28 @@ export default function App() {
     }
   };
 
-  // Promo Banners
-  const carouselBanners = [
-    {
-      title: "EXCLUSIVE MEGA FLASH DEALS",
-      sub: country === 'Kenya' ? "Up to 30% Off Infinix, Tecno & custom Smart TVs!" : "Up to 30% Off Phones & UG Street Rolex Kit specials!",
+  // Dynamic Promo Banners displaying actual products sold on the website
+  const carouselBanners = products.slice(0, 5).map((prod) => {
+    const formattedPrice = country === 'Kenya'
+      ? `KES ${prod.priceKES.toLocaleString()}`
+      : `UGX ${prod.priceUGX.toLocaleString()}`;
+    return {
+      title: prod.title,
+      sub: `${prod.brand} • Limited Stock Offer! Only ${formattedPrice}. Fast Payment on Delivery across East Africa.`,
       color: "bg-slate-950 border border-gold/40",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80"
-    },
-    {
-      title: "ZURI SHOPPERS EXPRESS SHIPPING",
-      sub: "Doorstep transport within 24 Hours inside Nairobi, Thika, Kampala & Entebbe!",
-      color: "bg-slate-900",
-      image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop&q=80"
-    },
-    {
-      title: country === 'Kenya' ? "KENYAN MAASAI CULTURAL WEEK" : "UGANDA ANNIVERSARY HARVEST SALES",
-      sub: country === 'Kenya' ? "Authentic hand-made Maasai Shuka Blankets & organic skin Shea Butter!" : "Handcrafted Suede Safari Boots & fresh coffee products!",
-      color: "bg-neutral-900 border border-amber-900/30",
-      image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&auto=format&fit=crop&q=80"
-    }
-  ];
+      image: prod.image,
+      product: prod
+    };
+  });
+
+  // Auto scroll carousel every 5 seconds
+  useEffect(() => {
+    if (carouselBanners.length <= 1) return;
+    const interval = setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % carouselBanners.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [carouselBanners.length]);
 
   // Filter Catalog Products
   const filteredProducts = products.filter((p) => {
@@ -240,38 +246,38 @@ export default function App() {
     <div className="bg-[#F1F1F2] min-h-screen font-sans flex flex-col text-slate-800">
       
       {/* 1. TOP UTILITY STRIP */}
-      <div className="bg-slate-950 text-white py-1.5 px-4 text-xs font-semibold flex flex-col sm:flex-row items-center justify-between border-b border-gold/20 gap-1 select-none">
+      <div className="bg-slate-950 text-white py-0.5 sm:py-1 px-4 text-[10.5px] font-semibold flex flex-col sm:flex-row items-center justify-between border-b border-gold/20 gap-1 select-none">
         <span className="flex items-center gap-1.5 text-slate-300 font-medium">
-          <span className="inline-block h-2 w-2 rounded-full bg-gold animate-pulse shadow-[0_0_8px_#C5A059]"></span>
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold animate-pulse shadow-[0_0_6px_#FACD46]"></span>
           <span>East African Commerce Hub: Kenya 🇰🇪 & Uganda 🇺🇬 • Style like Jumia</span>
         </span>
-        <div className="flex items-center gap-4 text-slate-300">
+        <div className="flex items-center gap-3 text-slate-300">
           <button 
             onClick={() => { setActiveTab('admin'); setSelectedCategory(null); setSelectedProduct(null); }}
-            className={`hover:text-gold-light transition-colors uppercase tracking-wider text-[10px] font-black cursor-pointer ${activeTab === 'admin' ? 'text-gold-light border-b border-gold' : ''}`}
+            className={`hover:text-gold-light transition-colors uppercase tracking-wider text-[9px] font-black cursor-pointer ${activeTab === 'admin' ? 'text-gold-light border-b border-gold' : ''}`}
             id="top-admin-portal-link"
           >
             Admin Panel 🛠️
           </button>
-          <span className="text-slate-650">|</span>
-          <div className="flex items-center gap-3">
-            <a href="https://wa.me/256755220220" target="_blank" rel="noopener noreferrer" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-2">
-              <MessageCircle size={14} className="text-green-500" />
+          <span className="text-slate-650 text-[9px]">|</span>
+          <div className="flex items-center gap-2.5">
+            <a href="https://wa.me/256755220220" target="_blank" rel="noopener noreferrer" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-1.5">
+              <MessageCircle size={12} className="text-green-500" />
               <span className="hidden md:inline">+256 755 220220</span>
             </a>
-            <a href="tel:+256755220220" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-2">
-              <Phone size={14} className="text-blue-400" />
+            <a href="tel:+256755220220" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-1.5">
+              <Phone size={11} className="text-blue-400" />
               <span className="hidden md:inline">Call Us</span>
             </a>
-            <a href="mailto:zurishoppersug@gmail.com" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-2">
-              <Mail size={14} className="text-orange-400" />
+            <a href="mailto:zurishoppersug@gmail.com" className="hover:text-gold-light transition-colors cursor-pointer flex items-center gap-1 md:px-1.5">
+              <Mail size={11} className="text-orange-400" />
               <span className="hidden md:inline">Email Support</span>
             </a>
           </div>
-          <span className="text-slate-650">|</span>
+          <span className="text-slate-650 text-[9px]">|</span>
           <button 
             onClick={() => { setActiveTab('orders'); setSelectedCategory(null); }}
-            className={`hover:text-gold-light transition-colors uppercase tracking-wider text-[10px] font-black cursor-pointer ${activeTab === 'orders' ? 'text-gold-light border-b border-gold' : ''}`}
+            className={`hover:text-gold-light transition-colors uppercase tracking-wider text-[9px] font-black cursor-pointer ${activeTab === 'orders' ? 'text-gold-light border-b border-gold' : ''}`}
           >
             Track My Package 📦
           </button>
@@ -367,14 +373,67 @@ export default function App() {
         
         {/* VIEW: ADMIN PANEL */}
         {activeTab === 'admin' ? (
-          <AdminPanel 
-            products={products}
-            onAddProduct={handleAddProduct}
-            onUpdateProduct={handleUpdateProduct}
-            onDeleteProduct={handleDeleteProduct}
-            onBack={() => setActiveTab('catalog')}
-            categories={categories}
-          />
+          adminLoggedIn ? (
+            <AdminPanel 
+              products={products}
+              onAddProduct={handleAddProduct}
+              onUpdateProduct={handleUpdateProduct}
+              onDeleteProduct={handleDeleteProduct}
+              onBack={() => setActiveTab('catalog')}
+              categories={categories}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-md border border-slate-200">
+                <div className="text-center mb-6">
+                  <div className="bg-gold/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <User size={32} className="text-gold-dark" />
+                  </div>
+                  <h2 className="text-xl font-black text-slate-800">Admin Login</h2>
+                  <p className="text-xs text-slate-500 mt-1.5">Enter authorized email to unlock</p>
+                </div>
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (adminLoginEmail.trim() === 'zurishoppersug@gmail.com') {
+                      setAdminLoggedIn(true);
+                      setAdminLoginError('');
+                      setAdminLoginEmail('');
+                    } else {
+                      setAdminLoginError('Unauthorized access.');
+                    }
+                  }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5 block">Admin Email Address</label>
+                    <div className="relative">
+                      <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input 
+                        type="email" 
+                        value={adminLoginEmail}
+                        onChange={(e) => setAdminLoginEmail(e.target.value)}
+                        placeholder="admin@zurishoppers.com" 
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-gold focus:ring-1 focus:ring-gold/40"
+                        required
+                      />
+                    </div>
+                    {adminLoginError && <p className="text-red-500 text-[10px] mt-1.5 font-bold animate-pulse">{adminLoginError}</p>}
+                  </div>
+                  <button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition-colors text-sm shadow-sm">
+                    Access Dashboard
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setActiveTab('catalog')}
+                    className="w-full text-slate-500 hover:text-slate-800 text-xs font-bold transition-colors"
+                  >
+                    Return to Store
+                  </button>
+                </form>
+              </div>
+            </div>
+          )
         ) : activeTab === 'orders' ? (
           <OrderTracker 
             country={country}
@@ -431,48 +490,64 @@ export default function App() {
 
               {/* Center Column: Beautiful Billboard Carousel slider */}
               <div className="flex-1 overflow-hidden rounded-2xl shadow-sm border border-slate-200 relative min-h-[220px] sm:min-h-[300px] flex">
-                {/* Active slider view background */}
-                <div className="absolute inset-0 z-0">
-                  <img 
-                    src={carouselBanners[carouselIndex].image} 
-                    alt="Promo" 
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover brightness-40" 
-                  />
-                </div>
+                {(() => {
+                  const currentBanner = carouselBanners[carouselIndex] || (carouselBanners.length > 0 ? carouselBanners[0] : {
+                    title: "Zuri Shoppers East African Hub",
+                    sub: "Quality items with free payment on delivery in Kenya & Uganda",
+                    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
+                    product: null
+                  });
+                  return (
+                    <>
+                      {/* Active slider view background */}
+                      <div className="absolute inset-0 z-0">
+                        <img 
+                          src={currentBanner.image} 
+                          alt="Promo" 
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover brightness-40 transition-all duration-700" 
+                        />
+                      </div>
 
-                {/* Left floating promo summary info text */}
-                <div className="relative z-10 p-6 sm:p-10 flex flex-col justify-between max-w-lg text-white">
-                  <div>
-                    <span className="bg-gold text-slate-950 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full inline-block mb-3.5">
-                      Zuri Anniversary Specials
-                    </span>
-                    <h2 className="text-xl sm:text-3xl font-black font-sans leading-tight text-white mb-2 tracking-tight">
-                      {carouselBanners[carouselIndex].title}
-                    </h2>
-                    <p className="text-xs sm:text-sm text-slate-300 leading-normal">
-                      {carouselBanners[carouselIndex].sub}
-                    </p>
-                  </div>
+                      {/* Left floating promo summary info text */}
+                      <div className="relative z-10 p-6 sm:p-10 flex flex-col justify-between max-w-lg text-white">
+                        <div>
+                          <span className="bg-gold text-slate-950 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full inline-block mb-3.5">
+                            {currentBanner.product?.isBestSeller ? "🔥 Best Seller Deal" : "✨ Featured Item"}
+                          </span>
+                          <h2 className="text-xl sm:text-2xl font-black font-sans leading-tight text-white mb-2 tracking-tight line-clamp-2">
+                            {currentBanner.title}
+                          </h2>
+                          <p className="text-xs sm:text-sm text-slate-300 leading-normal line-clamp-3">
+                            {currentBanner.sub}
+                          </p>
+                        </div>
 
-                  {/* Coupon codes trigger tag */}
-                  <div className="mt-4 sm:mt-0 flex flex-wrap items-center gap-3">
-                    <span className="text-[11px] text-slate-400">Coupon Code:</span>
-                    <strong className="bg-white/10 text-gold-light border border-gold/40 rounded-xl px-3 py-1 font-mono text-xs font-bold leading-normal">
-                      WELCOME25
-                    </strong>
-                    <button 
-                      onClick={() => {
-                        const supermarketProduct = products.find(p => p.category === 'supermarket');
-                        if (supermarketProduct) setSelectedProduct(supermarketProduct);
-                      }}
-                      className="bg-white hover:bg-slate-100 text-slate-950 font-black px-4 py-2 text-xs rounded-xl flex items-center gap-1 shadow cursor-pointer ml-auto"
-                    >
-                      <span>Shop Now</span>
-                      <ArrowRight size={13} />
-                    </button>
-                  </div>
-                </div>
+                        {/* Coupon codes trigger tag */}
+                        <div className="mt-4 sm:mt-0 flex flex-wrap items-center gap-3">
+                          <span className="text-[11px] text-slate-400">Coupon Code:</span>
+                          <strong className="bg-white/10 text-gold-light border border-gold/40 rounded-xl px-3 py-1 font-mono text-xs font-bold leading-normal">
+                            WELCOME25
+                          </strong>
+                          <button 
+                            onClick={() => {
+                              if (currentBanner.product) {
+                                setSelectedProduct(currentBanner.product);
+                              } else {
+                                const firstProduct = products[0];
+                                if (firstProduct) setSelectedProduct(firstProduct);
+                              }
+                            }}
+                            className="bg-white hover:bg-slate-100 text-slate-950 font-black px-4 py-2 text-xs rounded-xl flex items-center gap-1 shadow cursor-pointer ml-auto"
+                          >
+                            <span>Shop Now</span>
+                            <ArrowRight size={13} />
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
 
                 {/* Dot slider indicators */}
                 <div className="absolute bottom-4 right-4 flex gap-1.5 z-10">
@@ -506,14 +581,6 @@ export default function App() {
                     <h4 className="text-xs font-black uppercase text-slate-900 leading-tight">Country logistics network</h4>
                     <span className="text-[10px] text-slate-400 block mt-0.5">Coverage in Mombasa, Eldoret, Kampala, Jinja</span>
                   </div>
-                </div>
-
-                {/* Custom Promo mini-card */}
-                <div className="bg-slate-900 text-white rounded-2xl p-4 border border-gold/30 relative overflow-hidden flex-1 min-h-[90px] flex flex-col justify-center">
-                  <div className="absolute top-0 right-0 h-24 w-24 bg-gold/10 rounded-full blur-xl border border-none"></div>
-                  <span className="text-gold-light text-[9px] font-black tracking-widest uppercase">Promo Coupon</span>
-                  <p className="text-xs font-bold mt-1 leading-tight text-white">Save 10% on your entire basket today!</p>
-                  <p className="font-mono text-xs font-black text-gold mt-1.5">CODE: ZURI10</p>
                 </div>
               </div>
             </section>
@@ -832,13 +899,11 @@ export default function App() {
           <div>
             <h4 className="text-white text-xs font-bold uppercase tracking-wider mb-3">Secure Payments</h4>
             <p className="text-[11px] mb-3 leading-relaxed">
-              Accepting Safaricom M-Pesa, MTN Mobile Money, Airtel Money, Visa card, and secure Cash on Delivery.
+              We exclusively accept Cash on Delivery for all your orders. Pay when you receive your package.
             </p>
             {/* SVG custom simple logo stripe */}
             <div className="flex gap-2.5 flex-wrap">
-              <span className="bg-slate-950 border border-slate-800 text-[9px] text-gold font-black px-2 py-1 rounded">M-PESA / MOMO</span>
-              <span className="bg-slate-950 border border-slate-800 text-[9px] text-gold-light font-black px-2 py-1 rounded">AIRTEL MONEY</span>
-              <span className="bg-slate-950 border border-slate-805 text-[9px] text-white font-mono px-2 py-1 rounded">VISA CARD</span>
+              <span className="bg-slate-950 border border-slate-800 text-[9px] text-gold font-black px-2 py-1 rounded">CASH ON DELIVERY</span>
             </div>
           </div>
         </div>
@@ -856,27 +921,36 @@ export default function App() {
       </footer>
 
       {/* Floating Contact Buttons */}
-      <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-4">
+      <div className="fixed bottom-6 left-6 z-40 flex flex-col gap-2.5">
         <button 
           onClick={() => { try { window.open('https://wa.me/256755220220', '_blank'); } catch(e) { console.error('Failed to open link'); } }}
-          className="bg-green-500 hover:bg-green-600 text-white p-3.5 rounded-full shadow-2xl transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
+          className="bg-green-500 hover:bg-green-600 text-white p-2.5 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
           title="WhatsApp Support"
         >
-          <MessageCircle size={24} />
+          <MessageCircle size={18} />
+        </button>
+        <button 
+          onClick={() => { try { window.open('https://www.tiktok.com/@zurishoppers', '_blank'); } catch(e) { console.error('Failed to open link'); } }}
+          className="bg-black hover:bg-slate-900 border border-slate-800 text-white p-2.5 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer"
+          title="TikTok"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+          </svg>
         </button>
         <button 
           onClick={() => { try { window.open('tel:+256755220220'); } catch(e) { console.error('Failed to open link'); } }}
-          className="bg-blue-500 hover:bg-blue-600 text-white p-3.5 rounded-full shadow-2xl transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
+          className="bg-blue-500 hover:bg-blue-600 text-white p-2.5 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
           title="Call Us"
         >
-          <Phone size={24} />
+          <Phone size={18} />
         </button>
         <button 
           onClick={() => { try { window.open('mailto:zurishoppersug@gmail.com'); } catch(e) { console.error('Failed to open link'); } }}
-          className="bg-orange-500 hover:bg-orange-600 text-white p-3.5 rounded-full shadow-2xl transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
+          className="bg-orange-500 hover:bg-orange-600 text-white p-2.5 rounded-full shadow-lg transition-transform duration-300 transform hover:scale-110 flex items-center justify-center cursor-pointer border-none"
           title="Email Us"
         >
-          <Mail size={24} />
+          <Mail size={18} />
         </button>
       </div>
 

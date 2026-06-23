@@ -30,7 +30,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [email, setEmail] = useState('');
   const [town, setTown] = useState('');
   const [addressDetails, setAddressDetails] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState(country === 'Kenya' ? 'M-Pesa (Mobile Money)' : 'MTN Mobile Money');
+  const [paymentMethod, setPaymentMethod] = useState('Payment on Delivery');
 
   // Payment Pin Simulation
   const [momoPin, setMomoPin] = useState('');
@@ -271,7 +271,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {step === 2 && (
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2 uppercase tracking-wide">
-                2. Select & Simulate Payment Method
+                2. Select Payment Method
               </h3>
 
               <div className="space-y-2.5">
@@ -386,12 +386,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     boxShadow: '0 4px 14px rgba(197, 160, 89, 0.4), 0 0 20px rgba(30, 58, 138, 0.2)' 
                   }}
                 >
-                  Pay & Complete Order ({currencySymbol} {totalAmount.toLocaleString()})
+                  Place Order ({currencySymbol} {totalAmount.toLocaleString()})
                 </button>
               </div>
 
               <p className="text-[9px] text-slate-400 text-center leading-normal">
-                🔐 Fast encrypted payment gateways. Local transaction charges apply according to your MTN/Safaricom tariff rates.
+                🚚 You will pay cash to our delivery person at the time of receiving the items.
               </p>
             </div>
           )}
@@ -412,7 +412,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
               <div className="bg-slate-50 border border-slate-150 rounded-xl p-4 max-w-sm mx-auto text-left space-y-1.5 card shadow-sm">
                 <div className="flex justify-between items-baseline text-xs text-slate-500 pb-1.5 border-b border-slate-200">
-                  <span>Simulated Order ID:</span>
+                  <span>Order ID:</span>
                   <strong className="text-slate-900 font-mono text-sm">{createdOrder.id}</strong>
                 </div>
                 <div className="flex justify-between text-xs text-slate-600 pt-1">
